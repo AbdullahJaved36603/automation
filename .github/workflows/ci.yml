@@ -1,0 +1,43 @@
+name: Node.js CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Run tests with coverage
+      run: npm run test:coverage
+
+    - name: Test Report
+      run: |
+        echo "=== TEST EXECUTION REPORT ==="
+        echo "Node.js Version: ${{ matrix.node-version }}"
+        echo "Test Suite: Complete"
+        echo "All tests passed successfully!"
+        echo "Coverage report generated"
+        echo "============================="
